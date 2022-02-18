@@ -10,6 +10,8 @@ import baostock as bs
 import csv
 import numpy as np
 from datetime import datetime
+
+
 # 读取csv至字典
 csvFile = open("BCHAIN-MKPRU.csv", "r")
 reader = csv.reader(csvFile)
@@ -25,10 +27,7 @@ for item in reader:
 
 csvFile.close()
 
-# 使用talib计算MACD的参数
-short_win = 12    # 短期EMA平滑天数
-long_win = 26    # 长期EMA平滑天数
-macd_win = 20     # DEA线平滑天数
+
 
 # data 日期 close 收盘价
 buy = []
@@ -45,7 +44,7 @@ for k, v in result.items():
 
 def MACD(df2):
     dif, dea, hist = ta.MACD(
-        np.array(df2['close']), fastperiod=12, slowperiod=26, signalperiod=9)
+        np.array(df2['close']), fastperiod=2, slowperiod=26, signalperiod=2)
     df3 = pd.DataFrame({'dif': dif[33:], 'dea': dea[33:], 'hist': hist[33:]},
                        index=df2['date'][33:], columns=['dif', 'dea', 'hist'])
     # df3.plot(title='MACD')
@@ -103,17 +102,17 @@ def calWealth(buy, sell):
         # 只有涨了才卖
         if result[buy[i]] < result[sell[i]]:
             hold = wealth / result[buy[i]]
-            # 收益除成本大于手续费 比特币手续费2%
-            if ((result[sell[i]] - result[buy[i]]) * hold) / wealth > 0.02:
+            # 收益 - 买入 * 0.02 - 卖出 * 0.02
+            if ((result[sell[i]] - result[buy[i]]) * hold) > (result[buy[i]]+result[sell[i]]) * hold * 0.02 :
                 buyTime.append(datetime.strptime(buy[i], '%m/%d/%y'))  # 添加买入时间
                 sellTime.append(datetime.strptime(sell[i], '%m/%d/%y'))  # 卖出
                 # wealth 增加了 卖出价格 减去 买入价格 乘份额
-                wealth += hold * (result[sell[i]] - result[buy[i]]) * 0.98
+                wealth += ((result[sell[i]] - result[buy[i]]) * hold) - (result[buy[i]]+result[sell[i]]) * hold * 0.02
                 earn.append(hold * (result[sell[i]] - result[buy[i]]))
                 wealthArray.append(wealth)
                 # print('buy at '+buy[i]+' sell at ' + sell[i] + ' earn ' + str(
                     # hold * (result[sell[i]] - result[buy[i]])) + ' NOW Wealth ' + str(wealth))
-    # print(len(buyTime))
+    print(len(buyTime))
     return wealth
 total = calWealth(buy,sell)
 print(total)

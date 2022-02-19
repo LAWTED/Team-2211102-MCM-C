@@ -5,7 +5,7 @@ from email.policy import default
 import itertools
 import math
 import time
-from typing import List
+from typing import Counter, List
 from venv import create
 import matplotlib.pyplot as plt
 import talib as ta
@@ -21,7 +21,8 @@ def readCSV():
     csvFile = open("BCHAIN-MKPRU.csv", "r")
     reader = csv.reader(csvFile)
     f = open("MACD_EveryDay.txt", 'a')
-
+    date = []
+    price = []
     # 建立空字典
     result = {}
     for item in reader:
@@ -31,7 +32,11 @@ def readCSV():
         result[item[0]] = float(item[1])
 
     csvFile.close()
-    return result
+    for k, v in result.items():
+        result[k] = math.log(v, 10)
+        date.append(k)
+        price.append(result[k])
+    return (result, date, price)
 
 
 def diff_OP(result):
@@ -60,7 +65,7 @@ def write2csv(date, diff):
         {'date': date, 'diff': diff})
     dataframe.to_csv("diff-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
 
-def checkADF(diff):
+def checkADF(diff, period):
     # for i in range(60, 400):
     #     res = [0] * (len(diff) // i + 1)
     #     # 将 diff 分为 i 个数组
@@ -69,12 +74,22 @@ def checkADF(diff):
     #         adf_res = adfuller(cut)
     #         print(adf_res)
     adf_res = adfuller(diff)
-    print(adf_res)
-
+    t, p ,a,b,c,d = adf_res
+    if t < c['1%'] and t <  c['5%'] and t < c['10%']:
+        return True
+    return False
+    # print(adf_res)
 
 
 if __name__ == '__main__':
-    result = readCSV()
-    date, diff = diff_OP(result)
-    write2csv(date, diff)
-    # checkADF(diff)
+    result,date,price = readCSV()
+    # date, diff = diff_OP(result)
+    # write2csv(date, diff)
+    cnt = Counter()
+    for begin in range(0,1000,10):
+        for i in range(15,300):
+            if checkADF(price[begin:begin+i],i):
+                cnt[i]+=1
+                print(i)
+    print(cnt)
+

@@ -24,7 +24,7 @@ plt.rcParams['axes.unicode_minus'] = False
 # print(stock.head(10))
 def readCSV():
     # 读取csv至字典
-    csvFile = open("./diff-02-19-22-17.csv", "r")
+    csvFile = open("./BCHAIN-MKPRU.csv", "r")
     reader = csv.reader(csvFile)
 
     # 建立空字典
@@ -41,6 +41,8 @@ def readCSV():
 
 def createTRUEResult(result):
     df = []
+    predict = []
+    pre_date = []
     # 生成每日历史数据
     for i in range(1,len(result)):
         df.append(dict(itertools.islice(result.items(), i)))
@@ -53,11 +55,20 @@ def createTRUEResult(result):
         for k, v in df[i].items():
                 df2['close'].append(float(v))
                 df2['date'].append(k)
-        if len(df2['close']) == 1000:
-            operate(df2['date'][-50:], df2['close'][-50:])
+        # if len(df2['close']) == 500:
+        #     operate(df2)
+        # if len(df2['close']) == 100:
+        #     operate(df2)
+        if len(df2['close']) > 30:
+            operate(df2['date'][-20:], df2['close'][-20:], predict, pre_date)
+    dataframe = pd.DataFrame({'predict': predict},
+                   index=pre_date, columns=['predict'])
+    dataframe.plot(title='predict')
+    plt.show()
+    print(predict,pre_date)
 
 #
-def operate(date, close):
+def operate(date, close, predict, pre_date):
     df2 = {
         'date': date,
         'close': close
@@ -80,13 +91,27 @@ def operate(date, close):
     # p, d, q
     # model = ARIMA(df2['close'], order=(1, 1, 1))
     # AR{P} MA{Q}
-    # for p in range(1,11):
-    #     for q in range(1,11):
-    model = ARIMA(df2['close'], order=(1, 2, 1))
+    # results_bic = pd.DataFrame(index=['AR{}'.format(i) for i in range(1,8)], columns=['MA{}'.format(i) for i in range(1,8)])
+    # for p in range(1,5):
+    #     for q in range(1,5):
+    model = sm.tsa.SARIMAX(df2['close'], order=(1, 0, 1))
     result = model.fit()
-    print(result.summary())#统计出ARIMA模型的指标
+    #         results_bic.loc['AR{}'.format(p), 'MA{}'.format(q)] = result.bic
+
+    # results_bic = results_bic[results_bic.columns].astype(float)
+    # fig, ax = plt.subplots(figsize=(10, 8))
+    # ax = sns.heatmap(results_bic,
+    #                 mask=results_bic.isnull(),
+    #                 ax=ax,
+    #                 annot=True,
+    #                 fmt='.2f',
+    #                 );
+    # ax.set_title('BIC');
+    # plt.show()
+    # print(result.summary())#统计出ARIMA模型的指标
     pred = result.predict(begin_pre, end_pre,dynamic=True, typ='levels')#预测，指定起始与终止时间。预测值起始时间必须在原始数据中，终止时间不需要
-    print (pred)
+    pre_date.append(pred.keys()[-1])
+    predict.append(pred[-1])
     # df2['date'] = pd.to_datetime(df2['date'])
     # df2.set_index("date", inplace=True)
     # model = ARIMA(df2['close'], order=(1, 1, 1))
@@ -94,7 +119,6 @@ def operate(date, close):
     # print(result.summary())#统计出ARIMA模型的指标
     # pred = result.predict('20160911', '8/12/18',dynamic=True, typ='levels')#预测，指定起始与终止时间。预测值起始时间必须在原始数据中，终止时间不需要
     # print (pred)
-
 
 
 

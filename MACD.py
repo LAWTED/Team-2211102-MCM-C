@@ -44,10 +44,33 @@ def calWealth(buy, sell):
 
 # write to csv the operation
 def write2cvs(wealth, buyTime, sellTime, earn, wealthArray):
-    print(wealth)
     dataframe = pd.DataFrame(
         {'buy_time': buyTime, 'sell_time': sellTime, 'earn': earn, 'wealth': wealthArray})
     dataframe.to_csv("operate-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
+
+def writeBuySellCSV(result, buyTime, sellTime):
+    daterow = []
+    pricerow = []
+    buyrow = []
+    sellrow = []
+    for k,v in result.items():
+        daterow.append(datetime.strptime(k, '%m/%d/%y'))
+        pricerow.append(v)
+        if datetime.strptime(k, '%m/%d/%y') in sellTime:
+            sellrow.append(v)
+        else:
+            sellrow.append(None)
+        if datetime.strptime(k, '%m/%d/%y') in buyTime:
+            buyrow.append(v)
+        else:
+            buyrow.append(None)
+    for i in range(0, len(result), 166):
+        dataframe = pd.DataFrame(
+            {'date_time':daterow[i:i+166], 'price': pricerow[i:i+166], 'buy_time': buyrow[i:i+166], 'sell_time': sellrow[i:i+166]})
+        dataframe.plot(title='MACD')
+        plt.show()
+        dataframe.to_csv("Buy&Sell-%s--%d.csv"%((time.strftime("%m-%d-%H-%M", time.localtime())),i) , index=False, sep=',')
+    return
 
 # findBest
 def findBest():
@@ -120,7 +143,7 @@ def createSIMUResult(result):
     for k, v in result.items():
         df2['close'].append(float(v))
         df2['date'].append(k)
-    MACD_SIMU(df2)
+    return MACD_SIMU(df2)
 
 # MACD calculation in TRUEMODE
 def MACD_TRUE(df2, buy, sell):
@@ -164,13 +187,16 @@ def MACD_SIMU(df2):
     return (wealth, buyTime, sellTime, earn, wealthArray, dif, dea, hist)
 
 if __name__ == '__main__':
-    debug = False
+    debug = True
     result = readCSV()
     # TRUE MODE
     if (debug == False):
-        createTRUEResult(result)
+        wealth, buyTime, sellTime, earn, wealthArray, dif, dea, hist = createTRUEResult(result)
+        writeBuySellCSV(result, buyTime, sellTime)
 
     # SIMU MODE
     if (debug == True):
-        createSIMUResult(result)
+        wealth, buyTime, sellTime, earn, wealthArray, dif, dea, hist = createSIMUResult(result)
+        writeBuySellCSV(result, buyTime, sellTime)
+
 

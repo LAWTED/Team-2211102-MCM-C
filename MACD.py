@@ -21,6 +21,7 @@ def calWealth(buy, sell):
     sellTime = []
     earn = []
     wealthArray = []
+    fee = []
     firstBuyDate = datetime.strptime(buy[0], '%m/%d/%y')
     firstSellDate = datetime.strptime(sell[0], '%m/%d/%y')
     # 第一天就买入了
@@ -37,6 +38,7 @@ def calWealth(buy, sell):
                 # wealth 增加了 卖出价格 减去 买入价格 乘份额
                 wealth += ((result[sell[i]] - result[buy[i]]) * hold) - (result[buy[i]]+result[sell[i]]) * hold * 0.02
                 earn.append(hold * (result[sell[i]] - result[buy[i]]))
+                fee.append((result[buy[i]]+result[sell[i]]) * hold * 0.02)
                 wealthArray.append(wealth)
                 # print('buy at '+buy[i]+' sell at ' + sell[i] + ' earn ' + str(
                     # hold * (result[sell[i]] - result[buy[i]])) + ' NOW Wealth ' + str(wealth))
@@ -130,6 +132,7 @@ def createTRUEResult(result):
         for k, v in df[i].items():
                 df2['close'].append(float(v))
                 df2['date'].append(k)
+                # operate(df2)
         buy, sell = MACD_TRUE(df2, buy, sell)
     wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy, sell)
     write2cvs(wealth, buyTime, sellTime, earn, wealthArray)

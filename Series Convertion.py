@@ -14,16 +14,7 @@ import baostock as bs
 import csv
 import numpy as np
 from datetime import datetime
-
-# 王瑶:
-# 1.标准化 除以第一天的值
-
-# 王瑶:
-# 2. 取对数 以十为底
-
-# 王瑶:
-# 3. 一阶差分
-
+from statsmodels.tsa.stattools import adfuller
 
 def readCSV():
     # 读取csv至字典
@@ -60,8 +51,8 @@ def diff_OP(result):
         pre = logArr[i]
     df3 = pd.DataFrame({'dif': diff},
                    index=date, columns=['dif'])
-    # df3.plot(title='diff')
-    # plt.show()
+    df3.plot(title='diff')
+    plt.show()
     return (date, diff)
 
 def write2csv(date, diff):
@@ -69,9 +60,21 @@ def write2csv(date, diff):
         {'date': date, 'diff': diff})
     dataframe.to_csv("diff-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
 
+def checkADF(diff):
+    # for i in range(60, 400):
+    #     res = [0] * (len(diff) // i + 1)
+    #     # 将 diff 分为 i 个数组
+    #     cuts = np.array_split(diff, i)
+    #     for cut in cuts:
+    #         adf_res = adfuller(cut)
+    #         print(adf_res)
+    adf_res = adfuller(diff)
+    print(adf_res)
+
+
+
 if __name__ == '__main__':
     result = readCSV()
     date, diff = diff_OP(result)
     write2csv(date, diff)
-
-
+    # checkADF(diff)

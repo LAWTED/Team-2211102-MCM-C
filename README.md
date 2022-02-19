@@ -20,7 +20,7 @@
   - MACD triggers technical signals when it crosses above (to buy) or below (to sell) its signal line.
   - The speed of crossovers is also taken as a signal of a market is overbought or oversold.
   - MACD helps investors understand whether the bullish or bearish movement in the price is strengthening or weakening.
- 5. log-return 
+ 5. log-return
  - The logarithmic return or continuously compounded return, also known as force of interest, is:
 
 {\displaystyle R_{\mathrm {log} }=\ln \left({\frac {V_{f}}{V_{i}}}\right)}{\displaystyle R_{\mathrm {log} }=\ln \left({\frac {V_{f}}{V_{i}}}\right)}
@@ -34,3 +34,32 @@ where:
 
 {\displaystyle r_{\mathrm {log} }}r_{\mathrm{log}} = logarithmic rate of return
 {\displaystyle t}t = length of time period
+
+# Fintech: Best Time to Buy and Sell Stock with Transaction Fee
+* Find the best time to buy and sell stock with transaction fee using Dynamic Programming, implementation in Python.
+
+## Algorithm
+- Use **Dynamic Programming** to compute to optimal action sequence along a give price vector.
+- DP records the following at each time t:
+	- optimal value of money, and
+	- optimal value of stock, and
+	- the previous action that lead to this optimal value
+- **DP initialization:**
+	- money = original capital, and
+	- stock = buy stock with original capital
+- **DP recursion:**
+	- calculate optimal money:
+		* money = hold yesterday's money, or
+		* money = sell all your stocks today
+	- calculate optimal stock:
+		* stock = hold yesterday's stock, or
+		* stock = buy stock today with all your money
+- **DP trace back:**
+	- You must sell on the last day to maximize profit
+	- trace the previous action that lead to this optimal value
+- **Action smoothing:**
+	- if previous action is the same as the current action, then the action choosen is "hold".
+
+## Result
+- Testing on the [SPY dataset](https://finance.yahoo.com/quote/SPY/history?period1=1167580800&period2=1508947200&interval=1d&filter=history&frequency=1d), **return rate is: 212.88675299365727**
+

@@ -20,4 +20,17 @@
   - MACD triggers technical signals when it crosses above (to buy) or below (to sell) its signal line.
   - The speed of crossovers is also taken as a signal of a market is overbought or oversold.
   - MACD helps investors understand whether the bullish or bearish movement in the price is strengthening or weakening.
-  - 
+ 5. log-return 
+ - The logarithmic return or continuously compounded return, also known as force of interest, is:
+
+{\displaystyle R_{\mathrm {log} }=\ln \left({\frac {V_{f}}{V_{i}}}\right)}{\displaystyle R_{\mathrm {log} }=\ln \left({\frac {V_{f}}{V_{i}}}\right)}
+and the logarithmic rate of return is:
+
+{\displaystyle r_{\mathrm {log} }={\frac {\ln \left({\frac {V_{f}}{V_{i}}}\right)}{t}}}r_{\mathrm{log}} = \frac{\ln\left(\frac{V_f}{V_i}\right)}{t}
+or equivalently it is the solution {\displaystyle r}r to the equation:
+
+{\displaystyle V_{f}=V_{i}e^{r_{\mathrm {log} }t}}{\displaystyle V_{f}=V_{i}e^{r_{\mathrm {log} }t}}
+where:
+
+{\displaystyle r_{\mathrm {log} }}r_{\mathrm{log}} = logarithmic rate of return
+{\displaystyle t}t = length of time period

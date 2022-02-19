@@ -20,17 +20,21 @@
   - MACD triggers technical signals when it crosses above (to buy) or below (to sell) its signal line.
   - The speed of crossovers is also taken as a signal of a market is overbought or oversold.
   - MACD helps investors understand whether the bullish or bearish movement in the price is strengthening or weakening.
- 5. log-return 
- - The logarithmic return or continuously compounded return, also known as force of interest, is:
-
-{\displaystyle R_{\mathrm {log} }=\ln \left({\frac {V_{f}}{V_{i}}}\right)}{\displaystyle R_{\mathrm {log} }=\ln \left({\frac {V_{f}}{V_{i}}}\right)}
-and the logarithmic rate of return is:
-
-{\displaystyle r_{\mathrm {log} }={\frac {\ln \left({\frac {V_{f}}{V_{i}}}\right)}{t}}}r_{\mathrm{log}} = \frac{\ln\left(\frac{V_f}{V_i}\right)}{t}
-or equivalently it is the solution {\displaystyle r}r to the equation:
-
-{\displaystyle V_{f}=V_{i}e^{r_{\mathrm {log} }t}}{\displaystyle V_{f}=V_{i}e^{r_{\mathrm {log} }t}}
-where:
-
-{\displaystyle r_{\mathrm {log} }}r_{\mathrm{log}} = logarithmic rate of return
-{\displaystyle t}t = length of time period
+  >>https://www.investopedia.com/terms/m/macd.asp
+5. 快踩一手机器学习！
+  In order to learn the features of the modeled task and be able to predict, an LSTM needs to be trained. This process consists in computing the weights and biases of the LSTM by minimizing an objective function, typically RMSE, through some optimization algorithms. Once the model it’s trained on an initial training dataset and validated on a validation set, it is then tested on a real out of sample testing. This ensures that the model did in fact learn useful features and it is not overfitted on the training set, with poor prediction capabilities on new data. The next section analyses the performance of an LSTM applied to the S&P 500.
+  重点：While it is true that new machine learning algorithms, in particular deep learning, have been quite successful in different areas, they are not able to predict the US equity market. LSTM just use a value very close to the previous day closing price as prediction for the next day value. This is what would be expected by a model that has no predictive ability.
+  >>https://www.blueskycapitalmanagement.com/machine-learning-in-finance-why-you-should-not-use-lstms-to-predict-the-stock-market/
+6. 过拟合,数据缺失对深度学习的影响
+   - overfitting:It is a common pitfall in deep learning algorithms in which a model tries to fit the training data entirely and ends up memorizing the data patterns and the noise and random fluctuations. These models fail to generalize and perform well in the case of unseen data scenarios, defeating the model's purpose. If the model trains for too long on the training data or is too complex, it learns the noise or irrelevant information within the dataset.
+     >>https://www.v7labs.com/blog/overfitting#what-is-overfitting
+   - Missing data present various problems. First, the absence of data reduces statistical power, which refers to the probability that the test will reject the null hypothesis when it is false. Second, the lost data can cause bias in the estimation of parameters. Third, it can reduce the representativeness of the samples. Fourth, it may complicate the analysis of the study. Each of these distortions may threaten the validity of the trials and can lead to invalid conclusions.
+   >>Kang H. The prevention and handling of the missing data. Korean J Anesthesiol. 2013;64(5):402-406. doi:10.4097/kjae.2013.64.5.402
+7. bull market && bear market:
+   - bull market, in securities and commodities trading, a rising market. A bull is an investor who expects prices to rise and, on this assumption, purchases a security or commodity in hopes of reselling it later for a profit. A bullish market is one in which prices are generally expected to rise. 
+   >>https://www.britannica.com/topic/bull-market
+   - bear market, in securities and commodities trading, a declining market. A bear is an investor who expects prices to decline and, on this assumption, sells a borrowed security or commodity in the hope of buying it back later at a lower price, a speculative transaction called selling short. The term bear may derive from the proverb about “selling the bearskin before one has caught the bear” or perhaps from selling when one is “bare” of stock.
+   >>https://www.britannica.com/topic/bear-market 
+8. investment cycle:
+   cycle covers the period, usually spanning several business cycles, from the time of the Investment until the point where it stops generating cash flows. It includes Capital expenditures, disposals of Fixed assets, and changes in long-term Investments
+9. 

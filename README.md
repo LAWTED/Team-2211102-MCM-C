@@ -37,4 +37,6 @@
    >>https://www.britannica.com/topic/bear-market 
 8. investment cycle:
    cycle covers the period, usually spanning several business cycles, from the time of the Investment until the point where it stops generating cash flows. It includes Capital expenditures, disposals of Fixed assets, and changes in long-term Investments
-9. 
+9. 股票预测的模型，主要是神经网络与传统统计模型、随机模型的讨论：
+ - for short term prediction using the time series data, the ARIMA model and the stochastic model can be used interchangeably.For the ANN models, further studies, hybridization of existing models, and adding more independentvariables can improve the neural network models in predicting stock prices. One model can workbetter than other models with particular time series data. 
+   

@@ -33,7 +33,6 @@ def readCSV():
 
     csvFile.close()
     for k, v in result.items():
-        result[k] = math.log(v, 10)
         date.append(k)
         price.append(result[k])
     return (result, date, price)
@@ -86,7 +85,7 @@ if __name__ == '__main__':
     # date, diff = diff_OP(result)
     # write2csv(date, diff)
     cnt = Counter()
-    for begin in range(0,1000,10):
+    for begin in range(0,1000,100):
         for i in range(15,300):
             if checkADF(price[begin:begin+i],i):
                 cnt[i]+=1

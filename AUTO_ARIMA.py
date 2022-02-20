@@ -157,9 +157,9 @@ def getTrend(actual_value, pred_df):
     # 1 buy | -1 sell | 0 hold
     Action = 0
     actual_value = np.round(np.exp(actual_value))
-    if trend > 5:
+    if trend > 3:
         s_Trend = 1
-    elif trend < 0 and trend < -5:
+    elif trend < 0 and trend < -3:
         s_Trend = -1
     else:
         s_Trend = 0
@@ -175,20 +175,20 @@ def getTrend(actual_value, pred_df):
 def plotBUYSELL(date, priceVec, actionVec):
     actionVec[0] = 0
     dataframe2 = pd.DataFrame({'price': priceVec}, index=date)
-    fig = dataframe2.plot(title='ARIMA Result', figsize=(10,8))
+    fig = dataframe2.plot(title='ARIMA Result', figsize=(500,50))
     for i in range(len(actionVec)):
         if actionVec[i] == 1:
-            plt.scatter(i, priceVec[i], s=10, c='green')
+            plt.scatter(date[i], priceVec[i], s=10, c='green')
         if actionVec[i] == -1:
-            plt.scatter(i, priceVec[i], s=10, c='red')
+            plt.scatter(date[i], priceVec[i], s=10, c='red')
     plt.show()
-    fig.figure.savefig('AUTO_ARIMA.png', dpi=500)
+    fig.figure.savefig('AUTO_ARIMA.png', dpi=100)
 
 if __name__ == '__main__':
     result, date, price = readCSV()
     # result = result[:50]
-    # date = date[:50]
-    # price = price[:50]
+    # date = date[:300]
+    # price = price[:300]
     Action = []
     for i in range(30,len(price)):
         all_ts, pred_df = trainEveryDay(date[:i+1], price[:i+1])

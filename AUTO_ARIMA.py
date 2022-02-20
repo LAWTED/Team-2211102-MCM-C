@@ -1,9 +1,11 @@
+from ast import operator
 import csv
 from datetime import datetime
-from operator import mod
+from operator import index, mod
 import os
 import sys
 import math
+import time
 import warnings
 import itertools
 import numpy as np
@@ -107,7 +109,7 @@ def MAPE(predictions, actuals):
 # 传入每日数据
 def trainEveryDay(date, price):
     day = len(date)
-    print(f'This is SIMU of the {day} DAY')
+    # print(f'This is SIMU of the {day} DAY')
     train_df, test_df = createDF(date, price)
     train_ts = np.array(train_df.price)
 
@@ -137,10 +139,10 @@ def trainEveryDay(date, price):
     train_ts.price = np.round(np.exp(train_ts.price))
     all_ts = pd.concat([train_ts, test_ts])
     ax = all_ts.price.plot(marker='o',ms=3)
-    # plt.show()
     fig = pred_df.price.plot(ax=ax, title=f'AUTOARIMA of {day}',marker='o',ms=3)
     fig.figure.savefig(f'./AUTO_ARIMA_PNGS/{day}.png', dpi=500)
     plt.cla()
+    return all_ts, pred_df
     # plt.show()
 
     # MAPE 验证
@@ -150,8 +152,48 @@ def trainEveryDay(date, price):
     # print(combined)
     # print(df_all)
 
+def getTrend(actual_value, pred_df):
+    trend = (pred_df.price[-1] - pred_df.price[0]) / pred_df.price[0] * 100
+    # 1 buy | -1 sell | 0 hold
+    Action = 0
+    if trend > 5:
+        s_Trend = 1
+    elif trend < 0 and trend < -5:
+        s_Trend = -1
+    else:
+        s_Trend = 0
+    # 实际高于预估 预估上涨 买
+    if actual_value > pred_df.price[0]:
+        if s_Trend != 0:
+            Action = 1
+    if actual_value < pred_df.price[0]:
+        if s_Trend != 0:
+            Action = -1
+    return (Action)
+
+def plotBUYSELL(date, priceVec, actionVec):
+    actionVec[0] = 0
+    dataframe2 = pd.DataFrame({'price': priceVec}, index=date)
+    fig = dataframe2.plot(title='ARIMA Result', figsize=(10,8))
+    for i in range(len(actionVec)):
+        if actionVec[i] == 1:
+            plt.scatter(i, priceVec[i], s=10, c='green')
+        if actionVec[i] == -1:
+            plt.scatter(i, priceVec[i], s=10, c='red')
+    plt.show()
+    fig.figure.savefig('AUTO_ARIMA.png', dpi=500)
 
 if __name__ == '__main__':
     result, date, price = readCSV()
-    for i in range(30,1850,30):
-        trainEveryDay(date[:i], price[:i])
+    # result = result[:50]
+    # date = date[:50]
+    # price = price[:50]
+    Action = []
+    for i in range(30,len(price)):
+        all_ts, pred_df = trainEveryDay(date[:i-1], price[:i-1])
+        operate = getTrend(price[i], pred_df)
+        Action.append(operate)
+    df = pd.DataFrame({'opeate': Action},index=date[30:])
+    price = [np.round(np.exp(p)) for p in price]
+    plotBUYSELL(date[30:], price[30:], Action)
+    df.to_csv("AUTO_ARIMA-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')

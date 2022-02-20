@@ -1,14 +1,10 @@
 from collections import defaultdict
 import datetime
-from email.policy import default
 import itertools
 import time
-from typing import List
-from venv import create
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import talib as ta
 import pandas as pd
-import baostock as bs
 import csv
 import numpy as np
 from datetime import datetime
@@ -27,9 +23,43 @@ def calWealth(buy, sell):
     # 第一天就买入了
     if firstBuyDate > firstSellDate:
         buy = ['9/11/16'] + buy
+    # 判断buyTime and sellTime
+    def processBS(buyTime,sellTime):
+        # print(buyTime,sellTime)
+        bt = buyTime
+        st = sellTime
+        a = [datetime.strptime(i, '%m/%d/%y') for i in buyTime]
+        b = [datetime.strptime(i, '%m/%d/%y') for i in sellTime]
+        p = 0
+        q = 0
+        m = len(a)
+        n = len(b)
+        pre = a[0]
+        flag = 0
+        na = [bt[0]]
+        nb = []
+        while p < m and q < n:
+          if flag == 0:
+            while  q < n and  b[q] <= pre:
+              q += 1
+            if q < n:
+              pre = b[q]
+              nb.append(st[q])
+            flag = 1
+            continue
+          if flag == 1:
+            while p < m and  a[p] <= pre:
+              p += 1
+            if p < m:
+              pre = a[p]
+              na.append(bt[p])
+            flag = 0
+        # print(na,nb)
+        return (na,nb)
+    buy,sell = processBS(buy, sell)
     for i in range(len(buy)):
         # 只有涨了才卖
-        if result[buy[i]] < result[sell[i]]:
+        if datetime.strptime(buy[i], '%m/%d/%y') < datetime.strptime(sell[i], '%m/%d/%y') and result[buy[i]] < result[sell[i]]:
             hold = wealth / result[buy[i]]
             # 收益 - 买入 * 0.02 - 卖出 * 0.02
             if ((result[sell[i]] - result[buy[i]]) * hold) > (result[buy[i]]+result[sell[i]]) * hold * 0.02 :
@@ -168,25 +198,40 @@ def MACD_TRUE(df2, buy, sell):
                 sell.append(df3.index[i+1])
     return (buy, sell)
 
-
 # MACD calculation in SIMUMODE
 def MACD_SIMU(df2):
-    buy = []
-    sell = []
-    dif, dea, hist = ta.MACD(
-        np.array(df2['close']), fastperiod=8, slowperiod=30, signalperiod=13)
-    df3 = pd.DataFrame({'dif': dif[33:], 'dea': dea[33:], 'hist': hist[33:]},
-                       index=df2['date'][33:], columns=['dif', 'dea', 'hist'])
-    # df3.plot(title='MACD')
-    # plt.show()
-    datenumber = int(df3.shape[0])
-    for i in range(datenumber-1):
-        if ((df3.iloc[i, 0] <= df3.iloc[i, 1]) & (df3.iloc[i+1, 0] >= df3.iloc[i+1, 1])):
-            buy.append(df3.index[i+1])
-        if ((df3.iloc[i, 0] >= df3.iloc[i, 1]) & (df3.iloc[i+1, 0] <= df3.iloc[i+1, 1])):
-            sell.append(df3.index[i+1])
-    wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy, sell)
-    write2cvs(wealth, buyTime, sellTime, earn, wealthArray)
+    def calMACD(p,d,q):
+        buy = []
+        sell = []
+        # 8 30 13
+        dif, dea, hist = ta.MACD(
+            np.array(df2['close']), fastperiod=p, slowperiod=d, signalperiod=q)
+        df3 = pd.DataFrame({'dif': dif[33:], 'dea': dea[33:], 'hist': hist[33:]},
+                        index=df2['date'][33:], columns=['dif', 'dea', 'hist'])
+        # df3.plot(title='MACD')
+        # plt.show()
+        datenumber = int(df3.shape[0])
+        for i in range(datenumber-1):
+            if ((df3.iloc[i, 0] <= df3.iloc[i, 1]) & (df3.iloc[i+1, 0] >= df3.iloc[i+1, 1])):
+                buy.append(df3.index[i+1])
+            if ((df3.iloc[i, 0] >= df3.iloc[i, 1]) & (df3.iloc[i+1, 0] <= df3.iloc[i+1, 1])):
+                sell.append(df3.index[i+1])
+        return (buy,sell)
+    buy1, sell1 = calMACD(8,30,13)
+    ma = 0
+    res = []
+    for i in range(2,16):
+        for j in range(5,33):
+            for k in range(2,20):
+                buy2, sell2 = calMACD(i,j,k)
+                wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy1, sell2)
+                print(i,j,k,wealth)
+                ma = max(wealth,ma)
+                if ma == wealth:
+                    res = [i,j,k]
+    print(wealth)
+    print(res)
+    # write2cvs(wealth, buyTime, sellTime, earn, wealthArray)
     return (wealth, buyTime, sellTime, earn, wealthArray, dif, dea, hist)
 
 if __name__ == '__main__':
@@ -200,6 +245,6 @@ if __name__ == '__main__':
     # SIMU MODE
     if (debug == True):
         wealth, buyTime, sellTime, earn, wealthArray, dif, dea, hist = createSIMUResult(result)
-        writeBuySellCSV(result, buyTime, sellTime)
+        # writeBuySellCSV(result, buyTime, sellTime)
 
 

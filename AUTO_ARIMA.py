@@ -60,7 +60,7 @@ def readCSV():
 
 
 def createDF(date, price):
-    period = 30
+    period = 20
     date = date[-period:]
     price = price[-period:]
     mid = int(period * 0.7)

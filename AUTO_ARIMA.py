@@ -136,10 +136,11 @@ def trainEveryDay(date, price):
     test_ts.price = np.round(np.exp(test_ts.price))
     train_ts.price = np.round(np.exp(train_ts.price))
     all_ts = pd.concat([train_ts, test_ts])
-    ax = all_ts.price.plot()
+    ax = all_ts.price.plot(marker='o',ms=3)
     # plt.show()
-    fig = pred_df.price.plot(ax=ax, title=f'AUTOARIMA of {day}')
+    fig = pred_df.price.plot(ax=ax, title=f'AUTOARIMA of {day}',marker='o',ms=3)
     fig.figure.savefig(f'./AUTO_ARIMA_PNGS/{day}.png', dpi=500)
+    plt.cla()
     # plt.show()
 
     # MAPE 验证
@@ -152,4 +153,5 @@ def trainEveryDay(date, price):
 
 if __name__ == '__main__':
     result, date, price = readCSV()
-    trainEveryDay(date[:30], price[:30])
+    for i in range(30,1850,30):
+        trainEveryDay(date[:i], price[:i])

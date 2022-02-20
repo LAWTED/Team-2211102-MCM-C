@@ -55,6 +55,13 @@ where:
 9. 股票预测的模型，主要是神经网络与传统统计模型、随机模型的讨论：
  - for short term prediction using the time series data, the ARIMA model and the stochastic model can be used interchangeably.For the ANN models, further studies, hybridization of existing models, and adding more independentvariables can improve the neural network models in predicting stock prices. One model can workbetter than other models with particular time series data.
 
+10. 动态规划
+https://en.wikipedia.org/wiki/Dynamic_programming
+https://www.newgenesiscap.com/deal_427470
+
+11. mixed integer programming model
+https://www.solver.com/integer-constraint-programming
+
 # Fintech: Best Time to Buy and Sell Stock with Transaction Fee
 * Find the best time to buy and sell stock with transaction fee using Dynamic Programming, implementation in Python.
 

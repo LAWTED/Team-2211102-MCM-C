@@ -220,14 +220,26 @@ def createTRUEResult(result):
             df2['close'].append(float(v))
             df2['date'].append(k)
         df2['delta'] = [0] + np.diff(df2['close']).tolist()
-        if len(df2['delta']) > 30:
-            sp = np.fft.fft(df2['delta'])
-            df2['theta'] = [0] + np.arctan(sp.imag/sp.real).tolist()
-        # print(df2)
-                # numValues = len(df)
-                # numValuesHalf = numValues / 2
-                # df2['amplitude'] = np.sqrt(sp.real**2 + sp.imag**2)/numValuesHalf
-                # df2['freq'] = np.fft.fftfreq(sp.size, d=1)
+        sp = np.fft.fft(df2['delta'])
+        if len(df2['date']) > 30:
+            for sp_item in sp:
+                if sp_item.real == 0:
+                    df2['theta'].append(0)
+                else:
+                    df2['theta'].append(np.arctan(sp_item.imag/sp_item.real))
+                numValues = len(df2)
+                numValuesHalf = numValues / 2
+                df2['amplitude'] = np.sqrt(sp.real**2 + sp.imag**2)/numValuesHalf
+                df2['freq'] = np.fft.fftfreq(sp.size, d=1)
+            plt.figure(figsize=(15,5))
+            plt.plot(df2['freq'],df2['amplitude'], '.')
+            plt.axvline(x=0, ymin=0, ymax = 1, linewidth=1, color='r')
+            plt.ylabel('Amplitude [$]', fontsize=12)
+            plt.xlabel('Frequency [days]', fontsize=12)
+            plt.title('Frequency Domain', fontsize=18)
+            plt.grid()
+            plt.show()
+            print(df2)
 
 #
 # def operate(df2):

@@ -24,7 +24,7 @@ print("System version: {}".format(sys.version))
 # Forecasting settings
 N_SPLITS = 1
 HORIZON = 5  # Forecast 2 Days
-GAP = 2
+GAP = 1
 FIRST_WEEK = 40
 LAST_WEEK = 138
 
@@ -109,7 +109,7 @@ def MAPE(predictions, actuals):
 # 传入每日数据
 def trainEveryDay(date, price):
     day = len(date)
-    # print(f'This is SIMU of the {day} DAY')
+    print(f'This is SIMU of the {day} DAY')
     train_df, test_df = createDF(date, price)
     train_ts = np.array(train_df.price)
 
@@ -156,6 +156,7 @@ def getTrend(actual_value, pred_df):
     trend = (pred_df.price[-1] - pred_df.price[0]) / pred_df.price[0] * 100
     # 1 buy | -1 sell | 0 hold
     Action = 0
+    actual_value = np.round(np.exp(actual_value))
     if trend > 5:
         s_Trend = 1
     elif trend < 0 and trend < -5:
@@ -190,8 +191,8 @@ if __name__ == '__main__':
     # price = price[:50]
     Action = []
     for i in range(30,len(price)):
-        all_ts, pred_df = trainEveryDay(date[:i-1], price[:i-1])
-        operate = getTrend(price[i], pred_df)
+        all_ts, pred_df = trainEveryDay(date[:i+1], price[:i+1])
+        operate = getTrend(price[i-5], pred_df)
         Action.append(operate)
     df = pd.DataFrame({'opeate': Action},index=date[30:])
     price = [np.round(np.exp(p)) for p in price]

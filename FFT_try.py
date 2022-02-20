@@ -1,15 +1,18 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
+plt.close('all')
 df_original = pd.read_csv('./BCHAIN-MKPRU.csv')
 df_original.index = df_original.Date
+df_gold = pd.read_csv('./LBMA-GOLD.csv')
+df_gold.index = df_gold.Date
 # df_original = df_original.sort_values(by='Date', ascending=True)
 # print(df_original.head(10))
 # df = df_original[:1147]
 
 def operate(df):
     day = len(df)
+    df = df[-60:]
     df = df[['Value']]
     # print(df.head(10))
 
@@ -126,13 +129,13 @@ def operate(df):
     minSTD = std_values[idx]
     minRMSE = rmse_values[idx]
 
-    plt.figure(figsize=(15,5))
-    plt.plot(std_values, rmse_values)
-    plt.plot(minSTD, minRMSE, 'ro')
-    plt.ylabel('RMSE')
-    plt.xlabel('STD VALUES')
-    plt.title('Lowest RMSE = '+str(minRMSE)+'\nSTD Value = '+str(minSTD))
-    plt.grid()
+    # plt.figure(figsize=(15,5))
+    # plt.plot(std_values, rmse_values)
+    # plt.plot(minSTD, minRMSE, 'ro')
+    # plt.ylabel('RMSE')
+    # plt.xlabel('STD VALUES')
+    # plt.title('Lowest RMSE = '+str(minRMSE)+'\nSTD Value = '+str(minSTD))
+    # plt.grid()
     # plt.show()
 
     #Getting dominant values based on std_value
@@ -154,7 +157,9 @@ def operate(df):
     #Converting Delta Time to Time at start value of real data
     startValue = df['Value'][0]
     regression = startValue + np.cumsum(regressionDelta)
+    return (regression, df, day)
 
+def draw(regression, df, day):
     plt.figure(figsize=(15,5))
     fig = df['Value'].plot(grid=True)
     plt.plot(regression)
@@ -162,14 +167,18 @@ def operate(df):
     plt.legend(['Real','Predicted'])
 
     rmse = np.sqrt(np.mean((df['Value'].values - regression)**2))
-
     plt.title('RMSE = ' + str(rmse), fontsize=15)
     # plt.show()
-    fig.figure.savefig(f'FFT{day}.png', dpi=500)
-    print(df)
+    fig.figure.savefig(f'./FFT/{day}-FFT.png', dpi=500)
+    plt.close('all')
+    # print(df)
 
-# for i in range():
-operate(df_original[:1147])
+for i in range(70,1820):
+    regression_BIT, df_BIT, day_BIT = operate(df_original[:i])
+    regression_GOLD, df_GOLD, day_GOLD = operate(df_gold[:i])
+    draw(regression_BIT, df_BIT, day_BIT)
+
+
     #Calculating Regression Delta
     # regressionDelta = 0
     # for n in range(len(dominantTheta)):

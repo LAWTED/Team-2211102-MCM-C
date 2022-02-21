@@ -203,6 +203,28 @@ def transBS(date, actionVec):
             sellTime.append(date[ind])
     return (buyTime, sellTime)
 
+def pro(Action):
+    p = 0
+    after = [0] * len(Action)
+    while(p < len(Action)):
+        if Action[p] == 1:
+            sell = []
+            while p < len(Action)-1 and Action[p] == 1:
+                p += 1
+                sell.append(p)
+            after[sum(sell)//len(sell)] = 1
+        if Action[p] == -1:
+            buy = []
+            while p < len(Action)-1 and Action[p] == -1:
+                p += 1
+                buy.append(p)
+            after[sum(buy)//len(buy)] = -1
+        else:
+            p += 1
+    # df = pd.DataFrame({'after': after})
+    # df.to_csv("AFTER-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
+    return after
+
 def AUTO_ARIMA_MAIN(result):
     Action = []
     date, price = getDatePrice(result)
@@ -210,7 +232,8 @@ def AUTO_ARIMA_MAIN(result):
         all_ts, pred_df = trainEveryDay(date[:i+1], price[:i+1])
         operate = getTrend(price[i-5], pred_df)
         Action.append(operate)
-    return [0] *30 + Action
+    res = pro([0] *30 + Action)
+    return res
 
 
 

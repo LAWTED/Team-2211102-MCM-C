@@ -87,16 +87,22 @@ def pro(Action):
     while(p < len(Action)):
         if Action[p] == 1:
             sell = []
-            while Action[p] == 1:
+            while p < len(Action)-1 and Action[p] == 1:
                 p += 1
                 sell.append(p)
-            after[sum(sell)//len(sell)] = 1
+            if len(sell):
+                after[sum(sell)//len(sell)] = 1
+            else:
+                after[p] = 1
         if Action[p] == -1:
             buy = []
-            while Action[p] == -1:
+            while p < len(Action)-1 and Action[p] == -1:
                 p += 1
                 buy.append(p)
-            after[sum(buy)//len(buy)] = -1
+            if len(buy):
+                after[sum(buy)//len(buy)] = -1
+            else:
+                after[p] = -1
         else:
             p += 1
     # df = pd.DataFrame({'after': after})

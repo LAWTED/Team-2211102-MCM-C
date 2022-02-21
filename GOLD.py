@@ -1,5 +1,4 @@
 from multiprocessing import Value
-from numpy import NAN
 import pandas as pd
 import time
 

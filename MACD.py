@@ -100,7 +100,7 @@ def writeBuySellCSV(result, buyTime, sellTime):
         dataframe = pd.DataFrame(
             {'date_time':daterow[i:i+166], 'price': pricerow[i:i+166], 'buy_time': buyrow[i:i+166], 'sell_time': sellrow[i:i+166]})
         dataframe.plot(title='MACD')
-        plt.show()
+        # plt.show()
         dataframe.to_csv("Buy&Sell-%s--%d.csv"%((time.strftime("%m-%d-%H-%M", time.localtime())),i) , index=False, sep=',')
     return
 
@@ -217,7 +217,7 @@ def MACD_SIMU(df2):
             if ((df3.iloc[i, 0] >= df3.iloc[i, 1]) & (df3.iloc[i+1, 0] <= df3.iloc[i+1, 1])):
                 sell.append(df3.index[i+1])
         return (buy,sell)
-    buy, sell = calMACD(8,30,13)
+    buy, sell = calMACD(6,20,6)
     # wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy, sell)
     # write2cvs(wealth, buyTime, sellTime, earn, wealthArray)
     return (buy, sell)

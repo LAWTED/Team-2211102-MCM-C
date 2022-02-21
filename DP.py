@@ -12,7 +12,6 @@ from venv import create
 import matplotlib.pyplot as plt
 import talib as ta
 import pandas as pd
-import baostock as bs
 import csv
 import numpy as np
 from datetime import datetime
@@ -355,7 +354,14 @@ def DP_MAIN(result):
     date = createSIMUResult(result)['date']
     transFeeRate = float(0.02)
     actionVec = find_optimal_action(priceVec, transFeeRate)
-    return actionVec
+    # 松动区间
+    soft = [0] * len(actionVec)
+    for ind, v in enumerate(actionVec):
+        if v != 0:
+            for t in range(ind-2,ind+3):
+                if 0 <= t < len(actionVec):
+                    soft[t] = v
+    return soft
 
 
 if __name__ == '__main__':

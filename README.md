@@ -1,5 +1,5 @@
 # Team-2211102-MCM-C
-[![wakatime](https://wakatime.com/badge/github/LAWTED/Team-2211102-MCM-C.svg)](https://wakatime.com/badge/github/LAWTED/Team-2211102-MCM-C)
+[![wakatime](https://wakatime.com/badge/github/LAWTED/Team-2211102-MCM-C.svg)](https://wakatime.com/badge/github/LAWTED/Team-2211102-MCM-C) [![wakatime](https://wakatime.com/badge/user/b538f533-3e8c-4b7b-ab49-7aab7771d31c/project/3280a53f-4740-4e39-8b0f-a9d055e73acc.svg)](https://wakatime.com/badge/user/b538f533-3e8c-4b7b-ab49-7aab7771d31c/project/3280a53f-4740-4e39-8b0f-a9d055e73acc)
 1. 黄金交易日期研究
 - 周末不交易
 - （不重要但留着了）全球各大金市的交易时间，以伦敦时间为准，形成伦敦、纽约 （芝加哥）连续不停的黄金交易：伦敦每天上午10：30的早盘定价揭开北美金市的序幕。纽约、芝加哥等先后开盘，当伦敦下午定价后，纽约等地仍在交易，此时香港亦开始进行交易。伦敦的尾市影响美国的早市价格，美国的尾市会影响香港的开市价格，而香港的尾市和美国的收盘价又会影响伦敦的开市价，如此循环。正常交易时间为北京时间周一（08：00am）至周六（夏令时凌晨01：30am，冬令时令凌晨02：30am），节假日及国际市场休市则停止交易。

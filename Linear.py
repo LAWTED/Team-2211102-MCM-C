@@ -40,11 +40,11 @@ def linear(data):
 
     # 绘出图像
     # 绘出已知数据散点图
-    # plt.scatter(x, y, color='blue')
+    # plt.plot(x, y, color='blue')
     # # 绘出预测直线
     # fig = plt.plot(x, predict_y, color='red', linewidth=4)
 
-    # plt.title('predict the house price')
+    # plt.title(f'{day} Linear')
     # plt.xlabel('date')
     # plt.ylabel('price')
     # plt.savefig(f'./LINEAR/{day}-LN.png', dpi=500)
@@ -56,10 +56,10 @@ def getTrend(predict_y):
     trend = (predict_y[-1] - predict_y[0]) / predict_y[0] * 100
     # 1 buy | -1 sell | 0 hold
     Action = 0
-    if trend > 40:
-        Action = 1
-    elif trend < 0 and trend < -40:
+    if trend > 80:
         Action = -1
+    elif trend < 0 and trend < -40:
+        Action = 1
     else:
         Action = 0
     # 实际高于预估 预估上涨 买
@@ -69,7 +69,7 @@ def plotBUYSELL(data, actionVec):
     date = data['Date'][30:]
     date = [datetime.strptime(k, '%m/%d/%y') for k in date]
     priceVec = data['Value'][30:]
-    actionVec[0] = 0
+    actionVec[0] = 1
     dataframe2 = pd.DataFrame({'price': priceVec}, index=date)
     fig = dataframe2.plot(title='LINEAR Result')
     for i in range(len(actionVec)):
@@ -78,8 +78,27 @@ def plotBUYSELL(data, actionVec):
         if actionVec[i] == -1:
             plt.scatter(date[i], priceVec[i], s=10, c='red')
     # plt.show()
-    fig.figure.savefig('LINEAR_BS.png')
+    fig.figure.savefig('LINEAR_BS.png',dpi=500)
     plt.cla()
+def pro(Action):
+    p = 0
+    after = [0] * Action
+    while(p < len(Action)):
+        if Action[p] == 1:
+            sell = []
+            while Action[p] == 1:
+                p += 1
+                sell.append(p)
+            after[sum(sell)//len(sell)] = 1
+        if Action[p] == -1:
+            buy = []
+            while Action[p] == -1:
+                p += 1
+                buy.append(p)
+            after[sum(sell)//len(sell)] = 1
+    df = pd.DataFrame({'after': after})
+    df.to_csv("AFTER-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
+    return after
 
 if __name__ == '__main__':
     Action = []
@@ -88,6 +107,7 @@ if __name__ == '__main__':
         operate = getTrend(py)
         Action.append(operate)
         # regression_GOLD, df_GOLD, day_GOLD = linear(df_gold[:i])
+    Action = pro(Action)
     plotBUYSELL(df_original, Action)
     df = pd.DataFrame({'opeate': Action},index=df_original['Date'][30:])
     df.to_csv("LINEAR-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')

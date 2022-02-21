@@ -210,7 +210,7 @@ def AUTO_ARIMA_MAIN(result):
         all_ts, pred_df = trainEveryDay(date[:i+1], price[:i+1])
         operate = getTrend(price[i-5], pred_df)
         Action.append(operate)
-    return Action
+    return [0] *30 + Action
 
 
 

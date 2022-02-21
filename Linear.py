@@ -80,9 +80,10 @@ def plotBUYSELL(data, actionVec):
     # plt.show()
     fig.figure.savefig('LINEAR_BS.png',dpi=500)
     plt.cla()
+
 def pro(Action):
     p = 0
-    after = [0] * Action
+    after = [0] * len(Action)
     while(p < len(Action)):
         if Action[p] == 1:
             sell = []
@@ -95,10 +96,22 @@ def pro(Action):
             while Action[p] == -1:
                 p += 1
                 buy.append(p)
-            after[sum(sell)//len(sell)] = 1
+            after[sum(sell)//len(sell)] = -1
+        else:
+            p += 1
     df = pd.DataFrame({'after': after})
     df.to_csv("AFTER-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
     return after
+
+def Linear(result):
+    Action = []
+    for i in range(30,len(result)):
+        py = linear(result[:i])
+        operate = getTrend(py)
+        Action.append(operate)
+        # regression_GOLD, df_GOLD, day_GOLD = linear(df_gold[:i])
+    Action = pro(Action)
+    return Action
 
 if __name__ == '__main__':
     Action = []
@@ -108,6 +121,6 @@ if __name__ == '__main__':
         Action.append(operate)
         # regression_GOLD, df_GOLD, day_GOLD = linear(df_gold[:i])
     Action = pro(Action)
-    plotBUYSELL(df_original, Action)
+    # plotBUYSELL(df_original, Action)
     df = pd.DataFrame({'opeate': Action},index=df_original['Date'][30:])
     df.to_csv("LINEAR-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')

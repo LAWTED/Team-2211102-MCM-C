@@ -217,8 +217,8 @@ def MACD_SIMU(df2):
             if ((df3.iloc[i, 0] >= df3.iloc[i, 1]) & (df3.iloc[i+1, 0] <= df3.iloc[i+1, 1])):
                 sell.append(df3.index[i+1])
         return (buy,sell)
-    buy, sell = calMACD(6,20,6)
-    # wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy, sell)
+    buy, sell = calMACD(8,30,13)
+    # wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy, sell, result)
     # write2cvs(wealth, buyTime, sellTime, earn, wealthArray)
     return (buy, sell)
 

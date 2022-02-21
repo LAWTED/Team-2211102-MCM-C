@@ -2,6 +2,8 @@ from collections import defaultdict
 import datetime
 import itertools
 import time
+
+from matplotlib import pyplot as plt
 from calculateWealth import calWealth_MAIN
 from sympy import total_degree
 # import matplotlib.pyplot as plt
@@ -15,6 +17,7 @@ from DP import DP_MAIN
 from Linear import Linear_MAIN
 
 from MACD import MACD_MAIN
+from drawcsv import drawcsv1
 
 
 bit_data = pd.read_csv('./BCHAIN-MKPRU.csv')
@@ -27,5 +30,6 @@ DP_action = DP_MAIN(bit_df_everyday)
 LINEAR_action = Linear_MAIN(bit_df_everyday)
 AUTO_ARIMA_action = AUTO_ARIMA_MAIN(bit_df_everyday)
 total_action = pd.DataFrame({'MACD': MACD_action,'AARIMA': AUTO_ARIMA_action, 'LINEAR': LINEAR_action, 'DP': DP_action},index=bit_df_everyday['Date'])
-total_action.to_csv("FINAL.csv", index=True, sep=',')
+total_action.to_csv("./LAST/FINAL.csv", index=True, sep=',')
+drawcsv1(bit_df_everyday, total_action)
 print('fuck MCM')

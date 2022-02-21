@@ -56,9 +56,9 @@ def getTrend(predict_y):
     trend = (predict_y[-1] - predict_y[0]) / predict_y[0] * 100
     # 1 buy | -1 sell | 0 hold
     Action = 0
-    if trend > 80:
+    if trend > 40:
         Action = -1
-    elif trend < 0 and trend < -40:
+    elif trend < 0 and trend < -20:
         Action = 1
     else:
         Action = 0
@@ -71,14 +71,14 @@ def plotBUYSELL(data, actionVec):
     priceVec = data['Value'][30:]
     actionVec[0] = 1
     dataframe2 = pd.DataFrame({'price': priceVec}, index=date)
-    fig = dataframe2.plot(title='LINEAR Result')
+    fig = dataframe2.plot(title='LINEAR Result', figsize=(100,30))
     for i in range(len(actionVec)):
         if actionVec[i] == 1:
-            plt.scatter(date[i], priceVec[i], s=10, c='green')
+            plt.scatter(date[i], priceVec[i], s=50, c='green')
         if actionVec[i] == -1:
-            plt.scatter(date[i], priceVec[i], s=10, c='red')
+            plt.scatter(date[i], priceVec[i], s=50, c='red')
     # plt.show()
-    fig.figure.savefig('LINEAR_BS.png',dpi=500)
+    fig.figure.savefig('LINEAR_BS.png',dpi=100)
     plt.cla()
 
 def pro(Action):
@@ -96,11 +96,11 @@ def pro(Action):
             while Action[p] == -1:
                 p += 1
                 buy.append(p)
-            after[sum(sell)//len(sell)] = -1
+            after[sum(buy)//len(buy)] = -1
         else:
             p += 1
-    df = pd.DataFrame({'after': after})
-    df.to_csv("AFTER-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
+    # df = pd.DataFrame({'after': after})
+    # df.to_csv("AFTER-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
     return after
 
 def Linear(result):
@@ -120,7 +120,7 @@ if __name__ == '__main__':
         operate = getTrend(py)
         Action.append(operate)
         # regression_GOLD, df_GOLD, day_GOLD = linear(df_gold[:i])
-    Action = pro(Action)
-    # plotBUYSELL(df_original, Action)
-    df = pd.DataFrame({'opeate': Action},index=df_original['Date'][30:])
+    after = pro(Action)
+    plotBUYSELL(df_original, after)
+    df = pd.DataFrame({'opeate': Action ,'after': after},index=df_original['Date'][30:])
     df.to_csv("LINEAR-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')

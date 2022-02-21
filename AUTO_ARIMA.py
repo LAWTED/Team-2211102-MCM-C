@@ -133,7 +133,7 @@ def trainEveryDay(date, price):
     )
 
     model.fit(train_ts)
-    print(model.summary())
+    # print(model.summary())
     # model.plot_diagnostics(figsize=(10, 8))
     # plt.show()
     preds = model.predict(n_periods=GAP + HORIZON - 1)
@@ -148,9 +148,9 @@ def trainEveryDay(date, price):
     train_ts.price = np.round(np.exp(train_ts.price))
     all_ts = pd.concat([train_ts, test_ts])
     ax = all_ts.price.plot(marker='o',ms=3)
-    fig = pred_df.price.plot(ax=ax, title=f'AUTOARIMA of {day}',marker='o',ms=3)
-    fig.figure.savefig(f'./AUTO_ARIMA_PNGS/{day}.png', dpi=500)
-    plt.cla()
+    # fig = pred_df.price.plot(ax=ax, title=f'AUTOARIMA of {day}',marker='o',ms=3)
+    # fig.figure.savefig(f'./AUTO_ARIMA_PNGS/{day}.png', dpi=500)
+    # plt.cla()
     return all_ts, pred_df
     # plt.show()
 
@@ -212,13 +212,21 @@ def pro(Action):
             while p < len(Action)-1 and Action[p] == 1:
                 p += 1
                 sell.append(p)
-            after[sum(sell)//len(sell)] = 1
-        if Action[p] == -1:
+            if len(sell):
+                after[sum(sell)//len(sell)] = 1
+            else:
+                after[p] = 1
+                p += 1
+        elif Action[p] == -1:
             buy = []
             while p < len(Action)-1 and Action[p] == -1:
                 p += 1
                 buy.append(p)
-            after[sum(buy)//len(buy)] = -1
+            if len(buy):
+                after[sum(buy)//len(buy)] = -1
+            else:
+                after[p] = -1
+                p += 1
         else:
             p += 1
     # df = pd.DataFrame({'after': after})
@@ -249,5 +257,5 @@ if __name__ == '__main__':
         Action.append(operate)
     df = pd.DataFrame({'opeate': Action},index=date[30:])
     price = [np.round(np.exp(p)) for p in price]
-    plotBUYSELL(date[30:], price[30:], Action)
+    # plotBUYSELL(date[30:], price[30:], Action)
     df.to_csv("AUTO_ARIMA-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')

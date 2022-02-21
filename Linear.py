@@ -13,6 +13,7 @@ df_gold.index = df_gold.Date
 
 def linear(data):
     day = len(data)
+    print(f'THIS is LINEAR of the {day} days')
     data = data[-30:]
     x = np.array([i for i in range(len(data['Value']))])
     y = data['Value']
@@ -95,7 +96,7 @@ def pro(Action):
             else:
                 after[p] = 1
                 p += 1
-        if Action[p] == -1:
+        elif Action[p] == -1:
             buy = []
             while p < len(Action)-1 and Action[p] == -1:
                 p += 1

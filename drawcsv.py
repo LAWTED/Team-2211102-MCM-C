@@ -1,49 +1,26 @@
 from multiprocessing import Value
 import pandas as pd
 import time
+from MACD import write2cvs
 
+from calculateWealth import calWealth_MAIN
 
-df = pd.read_csv('./FINIAL.csv')
+bit_data = pd.read_csv('./BCHAIN-MKPRU.csv')
+bit_data.index = bit_data.Date
+# 从 30 天开始预测
+# for i in range(1000, len(bit_data)):
+bit_df_everyday = bit_data.head(1000)
+df = pd.read_csv('./FINIAL _BIT_1000.csv')
 fig = df.plot(title="FINAL")
-MACD_sum = 0
-LINEAR_sum = 0
-AARIMA_sum = 0
-M = 0
-L = 0
-A = 0
-D = 0
-# actionVec = df['DP']
-# soft = [0] * len(actionVec)
-# for ind, v in enumerate(actionVec):
-#     if v != 0:
-#         for t in range(ind-2,ind+3):
-#             soft[t] = v
-# df['DP'] = soft
-def pro(Action):
-    p = 0
-    after = [0] * len(Action)
-    while(p < len(Action)):
-        if Action[p] == 1:
-            sell = []
-            while p < len(Action)-1 and Action[p] == 1:
-                p += 1
-                sell.append(p)
-            after[sum(sell)//len(sell)] = 1
-        if Action[p] == -1:
-            buy = []
-            while p < len(Action)-1 and Action[p] == -1:
-                p += 1
-                buy.append(p)
-            after[sum(buy)//len(buy)] = -1
-        else:
-            p += 1
-    # df = pd.DataFrame({'after': after})
-    # df.to_csv("AFTER-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
-    return after
-
-df['AARIMA'] = pro(df['AARIMA'])
 
 def calRIGHT(df):
+  MACD_sum = 0
+  LINEAR_sum = 0
+  AARIMA_sum = 0
+  M = 0
+  L = 0
+  A = 0
+  D = 0
   for index, row in df.iterrows():
     if row['MACD'] != 0:
       if row['MACD'] == row['DP']:
@@ -61,7 +38,9 @@ def calRIGHT(df):
       D += 1
   print(MACD_sum/M * 100,LINEAR_sum/L * 100,AARIMA_sum/A * 100,[M,L,A,D])
 
+wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday, df['MACD'])
+write2cvs(wealth, buyTime, sellTime, earn, wealthArray)
 fig1 = df['AARIMA'].plot()
-
+calRIGHT(df)
 fig.figure.savefig('FINAL.png', dpi=500)
 # fig1.figure.savefig('AARIMA.png', dpi=500)

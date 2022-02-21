@@ -22,9 +22,9 @@ def drawcsv1(bit_df_everyday,df):
             title=f'{type}-BUY-AND-SELL-TIME', figsize=(10, 3))
         for i in range(len(actionVec)):
             if actionVec[i] == 1:
-                plt.scatter(i, priceVec[i], s=30, c='green')
+                plt.scatter(i, priceVec[i], s=100, c='green')
             if actionVec[i] == -1:
-                plt.scatter(i, priceVec[i], s=30, c='red')
+                plt.scatter(i, priceVec[i], s=100, c='red')
         fig.figure.savefig(f'./LAST/{type}-BUY-AND-SELL-TIME.png', dpi=100)
 
     def calRIGHT(df):

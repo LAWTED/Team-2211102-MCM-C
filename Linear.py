@@ -56,9 +56,9 @@ def getTrend(predict_y):
     trend = (predict_y[-1] - predict_y[0]) / predict_y[0] * 100
     # 1 buy | -1 sell | 0 hold
     Action = 0
-    if trend > 10:
+    if trend > 40:
         Action = 1
-    elif trend < 0 and trend < -10:
+    elif trend < 0 and trend < -40:
         Action = -1
     else:
         Action = 0
@@ -67,17 +67,18 @@ def getTrend(predict_y):
 
 def plotBUYSELL(data, actionVec):
     date = data['Date'][30:]
+    date = [datetime.strptime(k, '%m/%d/%y') for k in date]
     priceVec = data['Value'][30:]
     actionVec[0] = 0
     dataframe2 = pd.DataFrame({'price': priceVec}, index=date)
-    fig = dataframe2.plot(title='ARIMA Result', figsize=(80,50))
+    fig = dataframe2.plot(title='LINEAR Result')
     for i in range(len(actionVec)):
         if actionVec[i] == 1:
             plt.scatter(date[i], priceVec[i], s=10, c='green')
         if actionVec[i] == -1:
             plt.scatter(date[i], priceVec[i], s=10, c='red')
-    plt.show()
-    fig.figure.savefig('LINEAR_BS.png', dpi=100)
+    # plt.show()
+    fig.figure.savefig('LINEAR_BS.png')
     plt.cla()
 
 if __name__ == '__main__':

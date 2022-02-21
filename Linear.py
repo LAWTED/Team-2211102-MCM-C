@@ -47,8 +47,43 @@ def linear(data):
     plt.xlabel('square feet')
     plt.ylabel('price')
     plt.savefig(f'./LINEAR/{day}-FFT.png', dpi=500)
+    plt.cla()
+    return predict_y
     # plt.show()
 
-for i in range(40,1800):
-    linear(df_original[:i])
-    # regression_GOLD, df_GOLD, day_GOLD = linear(df_gold[:i])
+def getTrend(predict_y):
+    trend = (predict_y[-1] - predict_y[0]) / predict_y[0] * 100
+    # 1 buy | -1 sell | 0 hold
+    Action = 0
+    if trend > 10:
+        Action = 1
+    elif trend < 0 and trend < -10:
+        Action = -1
+    else:
+        Action = 0
+    # 实际高于预估 预估上涨 买
+    return (Action)
+
+def plotBUYSELL(data, actionVec):
+    date = data['Date'][30:]
+    priceVec = data['Value'][30:]
+    actionVec[0] = 0
+    dataframe2 = pd.DataFrame({'price': priceVec}, index=date)
+    fig = dataframe2.plot(title='ARIMA Result', figsize=(500,50))
+    for i in range(len(actionVec)):
+        if actionVec[i] == 1:
+            plt.scatter(date[i], priceVec[i], s=10, c='green')
+        if actionVec[i] == -1:
+            plt.scatter(date[i], priceVec[i], s=10, c='red')
+    fig.figure.savefig('LINEAR_BS.png', dpi=100)
+    plt.cla()
+
+if __name__ == '__main__':
+    Action = []
+    for i in range(30,1800,100):
+        py = linear(df_original[:i])
+        operate = getTrend(py)
+        Action.append(operate)
+        # regression_GOLD, df_GOLD, day_GOLD = linear(df_gold[:i])
+    plotBUYSELL(df_original, Action)
+    print(Action)

@@ -59,6 +59,11 @@ def calWealth_MAIN(result, date, actionVec):
         # print(na,nb)
         return (na,nb)
     buy,sell = processBS(buy, sell)
+    firstBuyDate = datetime.strptime(buy[0], '%m/%d/%y')
+    firstSellDate = datetime.strptime(sell[0], '%m/%d/%y')
+    # 第一天就买入了
+    if firstBuyDate > firstSellDate:
+        buy = ['9/11/16'] + buy
     if len(buy) > len(sell):
       buy = buy[:-1]
     for i in range(len(buy)):

@@ -361,6 +361,7 @@ def DP_MAIN(result):
     #         for t in range(ind-2,ind+3):
     #             if 0 <= t < len(actionVec):
     #                 soft[t] = v
+
     return actionVec
 
 

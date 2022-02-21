@@ -15,16 +15,17 @@ bit_data.index = bit_data.Date
 
 def drawcsv1(bit_df_everyday,df):
     def plotBUYSELL(date, priceVec, actionVec, type):
-        actionVec[0] = 0
+        if actionVec[0] == -1:
+            actionVec[0] = 0
         dataframe2 = pd.DataFrame({'date': date, 'price': priceVec})
         fig = dataframe2.plot(
-            title='MACD-BUY-AND-SELL-TIME', figsize=(200, 50))
+            title=f'{type}-BUY-AND-SELL-TIME', figsize=(10, 3))
         for i in range(len(actionVec)):
             if actionVec[i] == 1:
-                plt.scatter(i, priceVec[i], s=10, c='green')
+                plt.scatter(i, priceVec[i], s=30, c='green')
             if actionVec[i] == -1:
-                plt.scatter(i, priceVec[i], s=10, c='red')
-        fig.figure.savefig(f'./LAST/{type}-BUY-AND-SELL-TIME.png', dpi=200)
+                plt.scatter(i, priceVec[i], s=30, c='red')
+        fig.figure.savefig(f'./LAST/{type}-BUY-AND-SELL-TIME.png', dpi=100)
 
     def calRIGHT(df):
         MACD_sum = 0
@@ -67,15 +68,22 @@ def drawcsv1(bit_df_everyday,df):
         dataframe.to_csv("./LAST/%s-%s.csv" % (type, time.strftime("%m-%d-%H-%M",
                          time.localtime())), index=False, sep=',')
         print([type, wealth])
+        return (type, wealth)
 
+    type_Array = []
+    wealth_Array = []
     for type in ('MACD', 'AARIMA', 'LINEAR', 'DP'):
         wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(
             bit_df_everyday['Value'], bit_df_everyday['Date'], df[type])
-        write2cvs(wealth, buyTime, sellTime, earn, wealthArray, type)
+        type, wealth = write2cvs(wealth, buyTime, sellTime, earn, wealthArray, type)
+        type_Array.append(type)
+        wealth_Array.append(wealth)
         filter_action = BS2action(buyTime, sellTime, bit_df_everyday['Date'])
         plotBUYSELL(bit_df_everyday['Date'],
                     bit_df_everyday['Value'], filter_action, type)
-
+    FCK = pd.DataFrame({'type': type_Array, 'wealth': wealth_Array})
+    FCK.to_csv("./LAST/FUCK-%s.csv" % ( time.strftime("%m-%d-%H-%M",
+                         time.localtime())), index=False, sep=',')
     # wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['AARIMA'])
     # write2cvs(wealth, buyTime, sellTime, earn, wealthArray,'AARIMA')
     # wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['LINEAR'])

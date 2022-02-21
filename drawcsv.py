@@ -10,7 +10,7 @@ bit_data.index = bit_data.Date
 # 从 30 天开始预测
 # for i in range(1000, len(bit_data)):
 bit_df_everyday = bit_data.head(1000)
-df = pd.read_csv('./FINIAL _BIT_1000.csv')
+df = pd.read_csv('./FINIAL.csv')
 fig = df.plot(title="FINAL")
 
 def calRIGHT(df):
@@ -41,7 +41,7 @@ def calRIGHT(df):
 def write2cvs(wealth, buyTime, sellTime, earn, wealthArray, type):
     dataframe = pd.DataFrame(
         {'buy_time': buyTime, 'sell_time': sellTime, 'earn': earn, 'wealth': wealthArray})
-    dataframe.to_csv("%d-%s.csv"%(type, time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
+    dataframe.to_csv("%s-%s.csv"%(type, time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
     print([type, wealth])
 
 wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['MACD'])
@@ -53,6 +53,7 @@ write2cvs(wealth, buyTime, sellTime, earn, wealthArray,'LINEAR')
 wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['DP'])
 write2cvs(wealth, buyTime, sellTime, earn, wealthArray,'DP')
 hold = 1000/bit_df_everyday['Value'][0]
+print(bit_df_everyday['Value'][-1], bit_df_everyday['Value'][0])
 print(['stay', (hold * bit_df_everyday['Value'][-1] - (bit_df_everyday['Value'][0] + bit_df_everyday['Value'][-1]) * 0.02)])
 
 

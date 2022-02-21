@@ -4,7 +4,7 @@ import pandas as pd
 plt.close('all')
 df_original = pd.read_csv('./BCHAIN-MKPRU.csv')
 df_original.index = df_original.Date
-df_gold = pd.read_csv('./LBMA-GOLD.csv')
+df_gold = pd.read_csv('./NEW-GOLD.csv')
 df_gold.index = df_gold.Date
 # df_original = df_original.sort_values(by='Date', ascending=True)
 # print(df_original.head(10))
@@ -149,26 +149,38 @@ def operate(df):
 
     #Calculating Regression Delta
     regressionDelta = 0
+    tmp_date = []
     for n in range(len(dominantTheta)):
         temp = dominantAmp[n]
         shift = dominantTheta[n]
+        # tmp_date.append(dominantTheta.keys()[n])
         regressionDelta += dominantAmp[n] * np.cos(n * np.array(range(len(df))) + shift)
 
     #Converting Delta Time to Time at start value of real data
     startValue = df['Value'][0]
     regression = startValue + np.cumsum(regressionDelta)
+    regression = pd.DataFrame({'pre': regression},index=dominantAmpCheck.keys())
     return (regression, df, day)
 
-def draw(regression, df, day):
-    plt.figure(figsize=(15,5))
-    fig = df['Value'].plot(grid=True)
-    plt.plot(regression)
-    plt.ylabel('Stock Price [$]')
-    plt.legend(['Real','Predicted'])
-
-    rmse = np.sqrt(np.mean((df['Value'].values - regression)**2))
-    plt.title('RMSE = ' + str(rmse), fontsize=15)
+def draw(regression, df, day, regression2, df2):
+    # result = pd.merge(df, df2, how='left', on=['Date'])
+    df_norm = (df - df.min()) / (df.max() - df.min())
+    df2_norm = (df2 - df2.min()) / (df2.max() - df2.min())
+    df3_norm = (regression - regression.min()) / (regression.max() - regression.min())
+    df4_norm = (regression2 - regression2.min()) / (regression2.max() - regression2.min())
+    p = pd.DataFrame({'BIT':df_norm['Value'], 'GOLD':df2_norm['Value'], 'Pre_BIT':df3_norm['pre'], 'Pre_GOLD': df4_norm['pre']})
+    fig = p.plot(grid=True)
+    # plt.figure(figsize=(15,5))
+    # fig1 = df['Value'].plot(grid=True)
+    # plt.plot(regression)
+    # fig2 = df2['Value'].plot(grid=True)
+    # plt.plot(regression2)
     # plt.show()
+    # plt.ylabel('Stock Price [$]')
+    # plt.legend(['Real','Predicted'])
+
+    # rmse = np.sqrt(np.mean((df['Value'].values - regression)**2))
+    # plt.title('RMSE = ' + str(rmse), fontsize=15)
     fig.figure.savefig(f'./FFT/{day}-FFT.png', dpi=500)
     plt.close('all')
     # print(df)
@@ -176,7 +188,7 @@ def draw(regression, df, day):
 for i in range(70,1820):
     regression_BIT, df_BIT, day_BIT = operate(df_original[:i])
     regression_GOLD, df_GOLD, day_GOLD = operate(df_gold[:i])
-    draw(regression_BIT, df_BIT, day_BIT)
+    draw(regression_BIT, df_BIT, day_BIT, regression_GOLD, df_GOLD)
 
 
     #Calculating Regression Delta

@@ -1,3 +1,4 @@
+import time
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -39,15 +40,15 @@ def linear(data):
 
     # 绘出图像
     # 绘出已知数据散点图
-    plt.scatter(x, y, color='blue')
-    # 绘出预测直线
-    fig = plt.plot(x, predict_y, color='red', linewidth=4)
+    # plt.scatter(x, y, color='blue')
+    # # 绘出预测直线
+    # fig = plt.plot(x, predict_y, color='red', linewidth=4)
 
-    plt.title('predict the house price')
-    plt.xlabel('square feet')
-    plt.ylabel('price')
-    plt.savefig(f'./LINEAR/{day}-FFT.png', dpi=500)
-    plt.cla()
+    # plt.title('predict the house price')
+    # plt.xlabel('date')
+    # plt.ylabel('price')
+    # plt.savefig(f'./LINEAR/{day}-LN.png', dpi=500)
+    # plt.cla()
     return predict_y
     # plt.show()
 
@@ -69,21 +70,23 @@ def plotBUYSELL(data, actionVec):
     priceVec = data['Value'][30:]
     actionVec[0] = 0
     dataframe2 = pd.DataFrame({'price': priceVec}, index=date)
-    fig = dataframe2.plot(title='ARIMA Result', figsize=(500,50))
+    fig = dataframe2.plot(title='ARIMA Result', figsize=(80,50))
     for i in range(len(actionVec)):
         if actionVec[i] == 1:
             plt.scatter(date[i], priceVec[i], s=10, c='green')
         if actionVec[i] == -1:
             plt.scatter(date[i], priceVec[i], s=10, c='red')
+    plt.show()
     fig.figure.savefig('LINEAR_BS.png', dpi=100)
     plt.cla()
 
 if __name__ == '__main__':
     Action = []
-    for i in range(30,1800,100):
+    for i in range(30,len(df_original)):
         py = linear(df_original[:i])
         operate = getTrend(py)
         Action.append(operate)
         # regression_GOLD, df_GOLD, day_GOLD = linear(df_gold[:i])
     plotBUYSELL(df_original, Action)
-    print(Action)
+    df = pd.DataFrame({'opeate': Action},index=df_original['Date'][30:])
+    df.to_csv("LINEAR-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')

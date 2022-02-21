@@ -2,9 +2,8 @@
 from datetime import datetime
 
 
-def calWealth_MAIN(result, actionVec):
-    def transBS(result, actionVec):
-        date = result['Date']
+def calWealth_MAIN(result, date, actionVec):
+    def transBS(date, actionVec):
         buyTime = []
         sellTime = []
         for ind, v in enumerate(actionVec):
@@ -13,7 +12,7 @@ def calWealth_MAIN(result, actionVec):
             if v == -1:
                 sellTime.append(date[ind])
         return (buyTime, sellTime)
-    buy, sell = transBS(result, actionVec)
+    buy, sell = transBS(date, actionVec)
     wealth = 1000
     hold = 0
     buyTime = []
@@ -62,6 +61,7 @@ def calWealth_MAIN(result, actionVec):
     buy,sell = processBS(buy, sell)
     for i in range(len(buy)):
         # 只有涨了才卖
+        # print(result['Value'][buy[i]])
         if datetime.strptime(buy[i], '%m/%d/%y') < datetime.strptime(sell[i], '%m/%d/%y') and result[buy[i]] < result[sell[i]]:
             hold = wealth / result[buy[i]]
             # 收益 - 买入 * 0.02 - 卖出 * 0.02

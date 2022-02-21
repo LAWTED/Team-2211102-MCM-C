@@ -38,9 +38,25 @@ def calRIGHT(df):
       D += 1
   print(MACD_sum/M * 100,LINEAR_sum/L * 100,AARIMA_sum/A * 100,[M,L,A,D])
 
-wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday, df['MACD'])
-write2cvs(wealth, buyTime, sellTime, earn, wealthArray)
-fig1 = df['AARIMA'].plot()
+def write2cvs(wealth, buyTime, sellTime, earn, wealthArray, type):
+    dataframe = pd.DataFrame(
+        {'buy_time': buyTime, 'sell_time': sellTime, 'earn': earn, 'wealth': wealthArray})
+    dataframe.to_csv("%d-%s.csv"%(type, time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
+    print([type, wealth])
+
+wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['MACD'])
+write2cvs(wealth, buyTime, sellTime, earn, wealthArray,'MACD')
+wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['AARIMA'])
+write2cvs(wealth, buyTime, sellTime, earn, wealthArray,'AARIMA')
+wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['LINEAR'])
+write2cvs(wealth, buyTime, sellTime, earn, wealthArray,'LINEAR')
+wealth, buyTime, sellTime, earn, wealthArray = calWealth_MAIN(bit_df_everyday['Value'],bit_df_everyday['Date'], df['DP'])
+write2cvs(wealth, buyTime, sellTime, earn, wealthArray,'DP')
+hold = 1000/bit_df_everyday['Value'][0]
+print(['stay', (hold * bit_df_everyday['Value'][-1] - (bit_df_everyday['Value'][0] + bit_df_everyday['Value'][-1]) * 0.02)])
+
+
+# fig1 = df['AARIMA'].plot()
 calRIGHT(df)
-fig.figure.savefig('FINAL.png', dpi=500)
+# fig.figure.savefig('FINAL.png', dpi=500)
 # fig1.figure.savefig('AARIMA.png', dpi=500)

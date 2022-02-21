@@ -60,6 +60,15 @@ def readCSV():
         price.append(result[k])
     return (result, date, price)
 
+def getDatePrice(result):
+    date = []
+    price = []
+    for k, v in result.iterrows():
+        result[k] = math.log(v['Value'])
+        date.append(datetime.strptime(k, '%m/%d/%y'))
+        price.append(math.log(v['Value']))
+    return (date, price)
+
 
 def createDF(date, price):
     period = 20
@@ -183,6 +192,27 @@ def plotBUYSELL(date, priceVec, actionVec):
             plt.scatter(date[i], priceVec[i], s=10, c='red')
     plt.show()
     fig.figure.savefig('AUTO_ARIMA.png', dpi=100)
+
+def transBS(date, actionVec):
+    buyTime = []
+    sellTime = []
+    for ind, v in enumerate(actionVec):
+        if v == 1:
+            buyTime.append(date[ind])
+        if v == -1:
+            sellTime.append(date[ind])
+    return (buyTime, sellTime)
+
+def AUTO_ARIMA_MAIN(result):
+    Action = []
+    date, price = getDatePrice(result)
+    for i in range(30,len(price)):
+        all_ts, pred_df = trainEveryDay(date[:i+1], price[:i+1])
+        operate = getTrend(price[i-5], pred_df)
+        Action.append(operate)
+    return Action
+
+
 
 if __name__ == '__main__':
     result, date, price = readCSV()

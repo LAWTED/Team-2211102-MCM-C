@@ -103,8 +103,8 @@ def pro(Action):
     # df.to_csv("AFTER-%s.csv"%(time.strftime("%m-%d-%H-%M", time.localtime())) , index=False, sep=',')
     return after
 
-def Linear(result):
-    Action = []
+def Linear_MAIN(result):
+    Action = [0] * 30
     for i in range(30,len(result)):
         py = linear(result[:i])
         operate = getTrend(py)

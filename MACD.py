@@ -10,7 +10,7 @@ import numpy as np
 from datetime import datetime
 
 # calculate wealth of opration
-def calWealth(buy, sell):
+def calWealth(buy, sell,result):
     wealth = 1000
     hold = 0
     buyTime = []
@@ -173,8 +173,8 @@ def createSIMUResult(result):
         'date': [],
         'close': []
     }
-    for k, v in result.items():
-        df2['close'].append(float(v))
+    for k, v in result.iterrows():
+        df2['close'].append(float(v['Value']))
         df2['date'].append(k)
     return MACD_SIMU(df2)
 
@@ -217,22 +217,24 @@ def MACD_SIMU(df2):
             if ((df3.iloc[i, 0] >= df3.iloc[i, 1]) & (df3.iloc[i+1, 0] <= df3.iloc[i+1, 1])):
                 sell.append(df3.index[i+1])
         return (buy,sell)
-    buy1, sell1 = calMACD(8,30,13)
-    ma = 0
-    res = []
-    for i in range(2,16):
-        for j in range(5,33):
-            for k in range(2,20):
-                buy2, sell2 = calMACD(i,j,k)
-                wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy1, sell2)
-                print(i,j,k,wealth)
-                ma = max(wealth,ma)
-                if ma == wealth:
-                    res = [i,j,k]
-    print(wealth)
-    print(res)
+    buy, sell = calMACD(8,30,13)
+    # wealth, buyTime, sellTime, earn, wealthArray = calWealth(buy, sell)
     # write2cvs(wealth, buyTime, sellTime, earn, wealthArray)
-    return (wealth, buyTime, sellTime, earn, wealthArray, dif, dea, hist)
+    return (buy, sell)
+
+def MACD_MAIN(result):
+    date = result['Date']
+    buyTime, sellTime = createSIMUResult(result)
+    Action = [0] * len(result)
+    for i in range(len(date)):
+        if date[i] in buyTime:
+            Action[i] = 1
+        if date[i] in sellTime:
+            Action[i] = -1
+    return Action
+
+
+
 
 if __name__ == '__main__':
     debug = True

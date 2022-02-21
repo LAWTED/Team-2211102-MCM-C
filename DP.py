@@ -250,8 +250,8 @@ def createSIMUResult(result):
         'date': [],
         'close': []
     }
-    for k, v in result.items():
-        df2['close'].append(float(v))
+    for k, v in result.iterrows():
+        df2['close'].append(v['Value'])
         df2['date'].append(k)
     return df2
 
@@ -349,6 +349,14 @@ def plotBUYSELL(date, priceVec, actionVec):
     plt.show()
     fig.figure.savefig('test.png', dpi=500)
     print('find')
+
+def DP_MAIN(result):
+    priceVec = createSIMUResult(result)['close']
+    date = createSIMUResult(result)['date']
+    transFeeRate = float(0.02)
+    actionVec = find_optimal_action(priceVec, transFeeRate)
+    return actionVec
+
 
 if __name__ == '__main__':
     SEARCH = False

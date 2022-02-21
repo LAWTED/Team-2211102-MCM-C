@@ -64,7 +64,7 @@ def drawcsv1(bit_df_everyday,df):
     def write2cvs(wealth, buyTime, sellTime, earn, wealthArray, type):
         dataframe = pd.DataFrame(
             {'buy_time': buyTime, 'sell_time': sellTime, 'earn': earn, 'wealth': wealthArray})
-        dataframe.to_csv("%s-%s.csv" % (type, time.strftime("%m-%d-%H-%M",
+        dataframe.to_csv("./LAST/%s-%s.csv" % (type, time.strftime("%m-%d-%H-%M",
                          time.localtime())), index=False, sep=',')
         print([type, wealth])
 

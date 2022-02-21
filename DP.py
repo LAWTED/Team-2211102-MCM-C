@@ -355,13 +355,13 @@ def DP_MAIN(result):
     transFeeRate = float(0.02)
     actionVec = find_optimal_action(priceVec, transFeeRate)
     # 松动区间
-    soft = [0] * len(actionVec)
-    for ind, v in enumerate(actionVec):
-        if v != 0:
-            for t in range(ind-2,ind+3):
-                if 0 <= t < len(actionVec):
-                    soft[t] = v
-    return soft
+    # soft = [0] * len(actionVec)
+    # for ind, v in enumerate(actionVec):
+    #     if v != 0:
+    #         for t in range(ind-2,ind+3):
+    #             if 0 <= t < len(actionVec):
+    #                 soft[t] = v
+    return actionVec
 
 
 if __name__ == '__main__':

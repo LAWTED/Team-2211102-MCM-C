@@ -24,7 +24,7 @@ bit_data = pd.read_csv('./BCHAIN-MKPRU.csv')
 bit_data.index = bit_data.Date
 # 从 30 天开始预测
 # for i in range(1000, len(bit_data)):
-bit_df_everyday = bit_data.head(1000)
+bit_df_everyday = bit_data.head(150)
 MACD_action = MACD_MAIN(bit_df_everyday)
 DP_action = DP_MAIN(bit_df_everyday)
 LINEAR_action = Linear_MAIN(bit_df_everyday)

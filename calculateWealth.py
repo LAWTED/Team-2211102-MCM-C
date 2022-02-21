@@ -59,9 +59,12 @@ def calWealth_MAIN(result, date, actionVec):
         # print(na,nb)
         return (na,nb)
     buy,sell = processBS(buy, sell)
+    if len(buy) > len(sell):
+      buy = buy[:-1]
     for i in range(len(buy)):
         # 只有涨了才卖
-        # print(result['Value'][buy[i]])
+        # print(sell[i])
+        # print(result)
         if datetime.strptime(buy[i], '%m/%d/%y') < datetime.strptime(sell[i], '%m/%d/%y') and result[buy[i]] < result[sell[i]]:
             hold = wealth / result[buy[i]]
             # 收益 - 买入 * 0.02 - 卖出 * 0.02

@@ -57,9 +57,9 @@ def getTrend(predict_y):
     trend = (predict_y[-1] - predict_y[0]) / predict_y[0] * 100
     # 1 buy | -1 sell | 0 hold
     Action = 0
-    if trend > 40:
+    if trend > 20:
         Action = -1
-    elif trend < 0 and trend < -20:
+    elif trend < 0 and trend < -10:
         Action = 1
     else:
         Action = 0
